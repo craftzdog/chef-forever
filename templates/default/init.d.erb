@@ -28,9 +28,6 @@
 # logfile: /var/log/<%= @name %>.log
 #
  
-# Source function library.
-. /etc/init.d/functions
- 
 NAME=<%= @name %>
 COMMAND=<%= @command || 'node' %>
 SOURCE_DIR=<%= @path %>
@@ -43,7 +40,7 @@ logfile=/var/log/$NAME.log
 forever_dir=/var/run/forever
  
 node=node
-forever=forever
+forever=`which forever`
 awk=awk
 sed=sed
  
@@ -63,8 +60,8 @@ start() {
     chown $user $pidfile
  
     # Launch the application
-    daemon --user=root \
-      <%= @env_options %> $forever start --pidFile $pidfile -l $logfile -p $forever_dir -a -d -c $COMMAND --sourceDir $SOURCE_DIR $SOURCE_FILE $SCRIPT_OPTIONS
+    start-stop-daemon --start --quiet --user=$user \
+      <%= @env_options %> --exec $forever -- start --pidFile $pidfile -l $logfile -p $forever_dir -a -d -c $COMMAND --sourceDir $SOURCE_DIR $SOURCE_FILE $SCRIPT_OPTIONS
     RETVAL=$?
   else
     echo "Instance already running"
