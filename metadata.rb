@@ -9,4 +9,4 @@ version          "0.1.2"
 supports "debian"
 supports "ubuntu"
 
-depends "npm"
+depends "nodejs"
